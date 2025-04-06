@@ -4,13 +4,111 @@
   <meta charset="UTF-8">
   <title>Rice | TastyBite</title>
   <style>
+    @media screen and (max-width: 768px) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  #items-container {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .item {
+    width: 90%;
+    margin: 10px 0;
+    padding: 10px;
+  }
+
+  .item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .qty-control button {
+    padding: 6px 10px;
+    font-size: 16px;
+  }
+
+  #add-to-cart-btn {
+    width: 90%;
+    font-size: 16px;
+    padding: 12px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #cart-icon {
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  #cart-box {
+    width: 90%;
+    top: 60px;
+    right: 5%;
+    max-width: none;
+    padding: 15px;
+    font-size: 14px;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+
+  .cart-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .cart-buttons button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  #price-breakdown {
+    font-size: 13px;
+  }
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
     body {
       font-family: Arial, sans-serif;
       margin: 0; padding: 0;
       background: url('https://cdn-az.allevents.in/events5/banners/d72e7a9c610ba960fca8f1548864cc4111dfe4cf50b5dce92bc5361cbdb5d9d1-rimg-w678-h452-gmir.jpg?v=1698563826') no-repeat center center/cover;
       color: white;
     }
-
+    body::before {
+    content: '';
+    position: fixed; /* So it covers the whole screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%); /* Adjust this value as needed */
+    z-index: -1; /* Send it behind everything */
+  }
     h1 {
       text-align: center;
       padding: 20px;
@@ -168,19 +266,34 @@
       { name: "Veg Fried Rice", img: "https://th.bing.com/th/id/OIP.9aoqWQnzKwDmXe-tC4wtzgHaHa?rs=1&pid=ImgDetMain", price: 120 },
       { name: "Jeera Rice", img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/12/jeera-rice-cumin-rice.jpg", price: 90 },
       { name: "Mutton Biryani", img: "https://www.jaffnalove.com/3349-thickbox_default/hyderabad-mutton-biryani.jpg", price: 220 },
-      { name: "Peas Pulao", img: "https://www.whiskaffair.com/wp-content/uploads/2021/03/Peas-Pulao-2-3.jpg", price: 110 }
+      { name: "Peas Pulao", img: "https://www.whiskaffair.com/wp-content/uploads/2021/03/Peas-Pulao-2-3.jpg", price: 110 },
+      { name: "Paneer Biryani", img: "https://th.bing.com/th/id/R.abe60adc5b92aaf32174345a7ebdfeca?rik=m2BvjeBWbeCsqA&riu=http%3a%2f%2fwww.relishthebite.com%2fwp-content%2fuploads%2f2015%2f02%2fpaneerbiryani-7.jpg&ehk=pCAUidz%2boPX5iQ5jbZGNKPKMVxvHQB0rlUzX8I35jHY%3d&risl=&pid=ImgRaw&r=0", price: 160 },
+      { name: "Egg Fried Rice", img: "https://bing.com/th?id=OSK.9b51bd48202fa118a824750d61df704c", price: 130 },
+      { name: "Hyderabadi Dum Biryani", img: "https://th.bing.com/th/id/OIP.HuNJI73gCSyV5MYSGsrrAgHaHa?rs=1&pid=ImgDetMain", price: 200 },
+      { name: "Tamarind Rice", img: "https://bing.com/th?id=OSK.ed8a4708f0f348bef9ef9912e3d11549", price: 95 },
+      { name: "Coconut Rice", img: "https://bing.com/th?id=OSK.f095e82d09b376e97d2d118c49db8ad1", price: 105 },
+      { name: "Schezwan Fried Rice", img: "https://bing.com/th?id=OSK.fa929bb3d526f50e9b3b65bab6407e58", price: 140 },
+      { name: "Mushroom Biryani", img: "https://bing.com/th?id=OSK.1f53c924814f98286a66f5ac8a15338a", price: 170 },
+    
     ];
-
-    let itemQty = JSON.parse(localStorage.getItem("itemQty")) || Array(riceItems.length).fill(0);
+  
+    let itemQty = JSON.parse(localStorage.getItem("itemQty")) || [];
+  
+    // 🛠️ Ensure itemQty length matches the number of items
+    if (itemQty.length !== riceItems.length) {
+      itemQty = Array(riceItems.length).fill(0);
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
+    }
+  
     let cart = [];
-
+  
     const container = document.getElementById('items-container');
     const cartBox = document.getElementById('cart-box');
     const cartItems = document.getElementById('cart-items');
     const cartCount = document.getElementById('cart-count');
     const addToCartBtn = document.getElementById('add-to-cart-btn');
     const priceBreakdown = document.getElementById('price-breakdown');
-
+  
     function renderItems() {
       container.innerHTML = '';
       riceItems.forEach((item, index) => {
@@ -200,23 +313,26 @@
       });
       toggleAddBtn();
     }
-
+  
     function changeQty(index, delta) {
-      const wasZeroBefore = itemQty[index] === 0;
+      const previousQty = itemQty[index];
       itemQty[index] += delta;
       if (itemQty[index] < 0) itemQty[index] = 0;
+  
+      // Update display and localStorage
       document.getElementById(`qty-${index}`).textContent = itemQty[index];
       localStorage.setItem("itemQty", JSON.stringify(itemQty));
-
-      if (delta === 1 && wasZeroBefore) toggleAddBtn();
+  
+      // Show/hide add-to-cart if item was 0 and now increased
+      if (delta === 1 && previousQty === 0) toggleAddBtn();
       if (delta === -1) updateCart();
     }
-
+  
     function toggleAddBtn() {
       const anySelected = itemQty.some(qty => qty > 0);
       addToCartBtn.style.display = anySelected ? 'block' : 'none';
     }
-
+  
     addToCartBtn.onclick = () => {
       cart = [];
       itemQty.forEach((qty, i) => {
@@ -225,67 +341,69 @@
       updateCart();
       addToCartBtn.style.display = "none";
     };
-
+  
     function toggleCart() {
       cartBox.style.display = cartBox.style.display === 'none' ? 'block' : 'none';
       updateCart();
     }
-
+  
     function updateCart() {
-  cartItems.innerHTML = '';
-  let total = 0;
-  let newCart = [];
-
-  itemQty.forEach((qty, i) => {
-    if (qty > 0) {
-      const item = riceItems[i];
-      const li = document.createElement('li');
-      li.innerHTML = `
-        ${item.name} x ${qty} = ₹${item.price * qty}
-        <button onclick="changeQty(${i}, -1)">-</button>
+      cartItems.innerHTML = '';
+      let total = 0;
+      let newCart = [];
+  
+      itemQty.forEach((qty, i) => {
+        if (qty > 0) {
+          const item = riceItems[i];
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${item.name} x ${qty} = ₹${item.price * qty}
+            <button onclick="changeQty(${i}, -1)">-</button>
+          `;
+          cartItems.appendChild(li);
+          total += item.price * qty;
+          newCart.push({ ...item, qty });
+        }
+      });
+  
+      cart = newCart;
+      cartCount.textContent = cart.length;
+  
+      const clearBtn = document.querySelector('.clear-btn');
+      if (cart.length === 0) {
+        priceBreakdown.innerHTML = "No items selected.";
+        if (clearBtn) clearBtn.style.display = 'none';
+        return;
+      } else {
+        if (clearBtn) clearBtn.style.display = 'inline-block';
+      }
+  
+      const tax = total * 0.05;
+      const delivery = 30;
+      const distance = Math.floor(Math.random() * 10 + 1);
+      const distCharge = distance * 2;
+      const grandTotal = total + tax + delivery + distCharge;
+  
+      priceBreakdown.innerHTML = `
+        <br>Subtotal: ₹${total.toFixed(2)}
+        <br>Tax (5%): ₹${tax.toFixed(2)}
+        <br>Delivery: ₹${delivery}
+        <br>Distance (${distance}km): ₹${distCharge}
+        <br><strong>Total: ₹${grandTotal.toFixed(2)}</strong>
       `;
-      cartItems.appendChild(li);
-      total += item.price * qty;
-      newCart.push({ ...item, qty });
     }
-  });
-
-  cart = newCart;
-  cartCount.textContent = cart.length;
-
-  const clearBtn = document.querySelector('.clear-btn');
-  if (cart.length === 0) {
-    priceBreakdown.innerHTML = "No items selected.";
-    if (clearBtn) clearBtn.style.display = 'none';
-    return;
-  } else {
-    if (clearBtn) clearBtn.style.display = 'inline-block';
-  }
-
-  const tax = total * 0.05;
-  const delivery = 30;
-  const distance = Math.floor(Math.random() * 10 + 1);
-  const distCharge = distance * 2;
-  const grandTotal = total + tax + delivery + distCharge;
-
-  priceBreakdown.innerHTML = `
-    <br>Subtotal: ₹${total.toFixed(2)}
-    <br>Tax (5%): ₹${tax.toFixed(2)}
-    <br>Delivery: ₹${delivery}
-    <br>Distance (${distance}km): ₹${distCharge}
-    <br><strong>Total: ₹${grandTotal.toFixed(2)}</strong>
-  `;
-}
-
+  
     function clearCart() {
       itemQty = Array(riceItems.length).fill(0);
       localStorage.setItem("itemQty", JSON.stringify(itemQty));
       renderItems();
       updateCart();
     }
-
+  
+    // Init
     renderItems();
     updateCart();
   </script>
+  
 </body>
 </html>
