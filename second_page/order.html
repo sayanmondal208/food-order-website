@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order | TastyBite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .restaurant-card:hover .restaurant-image {
+      transform: scale(1.1);
+      transition: transform 0.4s ease;
+    }
+
+    .restaurant-image {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.75rem;
+    }
+
+    #overlay.active,
+    #popup.active,
+    #cartPopup.active {
+      display: block;
+    }
+
+    #overlay,
+    #popup,
+    #cartPopup {
+      display: none;
+    }
+
+    .cart-icon {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: #f59e0b;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 9999px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 50;
+    }
+
+    .cart-counter {
+      background: #ef4444;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.5rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <!-- Cart Icon -->
+  <div class="cart-icon" onclick="showCart()">
+    🛒 FoodBucket <span id="cartCounter" class="cart-counter">0</span>
+  </div>
+
+  <!-- Restaurant List -->
+  <div class="max-w-6xl mx-auto p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="restaurantContainer">
+   
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
+
+  <!-- Popup for restaurant items -->
+  <div id="popup" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-6 z-50 w-full max-w-md">
+    <h2 id="popupTitle" class="text-2xl font-bold mb-4"></h2>
+    <div id="popupItems" class="space-y-2 max-h-64 overflow-y-auto"></div>
+    <ul id="cartItems" class="mt-4 text-sm text-gray-700"></ul>
+    <button id="addToFoodBucketBtn" class="bg-yellow-500 text-white px-4 py-2 rounded mt-4 hidden">Add to FoodBucket</button>
+    <button onclick="closePopup()" class="text-red-500 underline mt-2 block text-sm">Close</button>
+  </div>
+
+  <!-- Cart Popup -->
+  <div id="cartPopup" class="fixed top-20 right-4 bg-white rounded-xl shadow-xl p-6 z-50 w-96 max-h-[70vh] overflow-y-auto">
+    <h2 class="text-xl font-semibold mb-4">🛒 Food Cart</h2>
+    <div id="cartDetails" class="space-y-2"></div>
+    <div class="mt-4 font-bold text-lg border-t pt-2">Total: ₹<span id="totalCost">0</span></div>
+    <button onclick="closeCart()" class="text-red-500 underline mt-4 block text-sm">Close</button>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const container = document.getElementById('restaurantContainer');
+    const overlay = document.getElementById('overlay');
+    const popup = document.getElementById('popup');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupItems = document.getElementById('popupItems');
+    const cartItems = document.getElementById('cartItems');
+    const cartCounter = document.getElementById('cartCounter');
+    const cartPopup = document.getElementById('cartPopup');
+    const cartDetails = document.getElementById('cartDetails');
+    const totalCostDisplay = document.getElementById('totalCost');
+    const addBtn = document.getElementById('addToFoodBucketBtn');
+    const clearCartBtn = document.getElementById('clearCartBtn');
+  
+    const sampleItems = [
+      { name: 'Chicken Biryani', type: 'Non-Veg', price: 220 },
+      { name: 'Paneer Tikka', type: 'Veg', price: 180 },
+      { name: 'Mango Lassi', type: 'Beverage', price: 90 },
+      { name: 'Veg Hakka Noodles', type: 'Veg', price: 150 },
+    ];
+  
+    let cart = {}; // { 'Restaurant Name': { 'Item Name': quantity } }
+    let tempCart = {}; // Temporary popup cart
+  
+    function updatePopupCartDisplay() {
+      cartItems.innerHTML = '';
+      let hasItems = false;
+      Object.keys(tempCart).forEach(item => {
+        const quantity = tempCart[item];
+        if (quantity > 0) {
+          hasItems = true;
+          const li = document.createElement('li');
+          li.textContent = `${item} x ${quantity}`;
+          cartItems.appendChild(li);
+        }
+      });
+      addBtn.classList.toggle('hidden', !hasItems);
+    }
+  
+    function renderItems() {
+      popupItems.innerHTML = sampleItems.map(item => {
+        const key = `${item.name}`;
+        const quantity = tempCart[key] || 0;
+        return `
+          <div class="border-b py-2">
+            <div class="flex justify-between items-center">
+              <span>${item.name} (${item.type}) - ₹${item.price}</span>
+              <div class="flex items-center gap-2">
+                <button onclick="changeTempQuantity('${key}', -1)" class="bg-red-500 text-white px-2 py-1 rounded">–</button>
+                <span>${quantity}</span>
+                <button onclick="changeTempQuantity('${key}', 1)" class="bg-green-500 text-white px-2 py-1 rounded">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  
+    function changeTempQuantity(item, delta) {
+      tempCart[item] = (tempCart[item] || 0) + delta;
+      if (tempCart[item] < 0) tempCart[item] = 0;
+      renderItems();
+      updatePopupCartDisplay();
+  
+      const currentRestaurant = popup.getAttribute('data-restaurant');
+      if (cart[currentRestaurant] && cart[currentRestaurant][item]) {
+        cart[currentRestaurant][item] += delta;
+        if (cart[currentRestaurant][item] <= 0) {
+          delete cart[currentRestaurant][item];
+        }
+        if (Object.keys(cart[currentRestaurant]).length === 0) {
+          delete cart[currentRestaurant];
+        }
+        updateCartIcon();
+      }
+    }
+  
+    function showPopup(name) {
+      popupTitle.innerText = name;
+      tempCart = { ...cart[name] } || {};
+      renderItems();
+      updatePopupCartDisplay();
+      popup.classList.add('active');
+      overlay.classList.add('active');
+      popup.setAttribute('data-restaurant', name);
+    }
+  
+    function closePopup() {
+      popup.classList.remove('active');
+      overlay.classList.remove('active');
+    }
+  
+    document.getElementById('addToFoodBucketBtn').addEventListener('click', () => {
+      const currentRestaurant = popup.getAttribute('data-restaurant');
+      if (!cart[currentRestaurant]) cart[currentRestaurant] = {};
+  
+      Object.keys(tempCart).forEach(item => {
+        if (!cart[currentRestaurant][item]) cart[currentRestaurant][item] = 0;
+        cart[currentRestaurant][item] += tempCart[item];
+      });
+  
+      updateCartIcon();
+      closePopup();
+      alert('Items added to FoodBucket!');
+    });
+  
+    function updateCartIcon() {
+      let totalCount = 0;
+      Object.values(cart).forEach(restaurantItems => {
+        Object.values(restaurantItems).forEach(qty => totalCount += qty);
+      });
+      cartCounter.textContent = totalCount;
+      localStorage.setItem('foodBucketCart', JSON.stringify(cart));
+    }
+  
+    function showCart() {
+      cartDetails.innerHTML = '';
+      let totalCost = 0;
+  
+      Object.entries(cart).forEach(([restaurantName, items]) => {
+        const restHeader = document.createElement('div');
+        restHeader.className = "font-bold mt-4 mb-2 text-lg text-purple-700 flex justify-between items-center";
+        restHeader.innerHTML = `<span>From ${restaurantName}</span><button onclick="removeRestaurant('${restaurantName}')" class="text-red-500 text-sm ml-2">Remove All</button>`;
+        cartDetails.appendChild(restHeader);
+  
+        Object.entries(items).forEach(([itemName, quantity]) => {
+          const item = sampleItems.find(i => i.name === itemName);
+          if (item && quantity > 0) {
+            const itemTotal = item.price * quantity;
+            totalCost += itemTotal;
+            const div = document.createElement('div');
+            div.className = "flex justify-between border-b py-1";
+            div.innerHTML = `<span>${itemName} x ${quantity}</span><span>₹${itemTotal}</span>`;
+            cartDetails.appendChild(div);
+          }
+        });
+      });
+  
+      const clearBtn = document.createElement('button');
+      clearBtn.textContent = "Clear Cart";
+      clearBtn.className = "mt-4 bg-red-500 text-white px-4 py-2 rounded";
+      clearBtn.onclick = clearCart;
+      cartDetails.appendChild(clearBtn);
+  
+      totalCostDisplay.textContent = totalCost;
+      cartPopup.classList.add('active');
+      overlay.classList.add('active');
+    }
+  
+    function closeCart() {
+      cartPopup.classList.remove('active');
+      overlay.classList.remove('active');
+    }
+  
+    function clearCart() {
+      cart = {};
+      updateCartIcon();
+      closeCart();
+      alert('Cart cleared!');
+    }
+  
+    function removeRestaurant(name) {
+      delete cart[name];
+      updateCartIcon();
+      showCart();
+    }
+  
+    window.onload = () => {
+      const storedCart = localStorage.getItem('foodBucketCart');
+      if (storedCart) {
+        cart = JSON.parse(storedCart);
+        updateCartIcon();
+      }
+      const restaurants = [
+  'Spice Villa', 'Burger Barn', 'Curry House', 'Noodle Hub', 'Pizza Plaza', 'Tandoori Treats', 'Biryani Bowl',
+  'Sushi Samba', 'Green Garden', 'BBQ Nation', 'Vegan Valley', 'Kebab King', 'Seafood Spot', 'Wok & Roll',
+  'Choco Love', 'Sandwich Street', 'Pasta Point', 'Rice & Spice', 'Sweet Tooth', 'Hot Pot Heaven'
+];
+
+const restaurantImages = [
+  "https://th.bing.com/th/id/OIP.SVZvAfyjLHVrMlCV0PIv1gHaE8?rs=1&pid=ImgDetMain",
+  "https://images.pexels.com/photos/370984/pexels-photo-370984.jpeg?cs=srgb&dl=pexels-creative-vix-370984.jpg&fm=jpg",
+  "https://www.irishpublighting.com/wp-content/uploads/2016/02/%D1%85%D0%B8%D0%BD%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-4.jpg",
+  "https://media.vogue.fr/photos/634ebfa6c00380903a8806a1/master/w_1600%2Cc_limit/TOO_restaurant_Panoramique_vue_Paris_Seine_Tour_Eiffel_2.jpg",
+  "https://www.jetsetchristina.com/wp-content/uploads/2022/06/jetset-christina-dallas-restaurants-scaled.jpg",
+  "https://wallpapers.com/images/hd/restaurant-pictures-wxpmgrqqzd8y7xdx.jpg",
+  "https://th.bing.com/th/id/R.28427a9f60512199e6d24f70d97393d8?rik=H8L29qCRkKydKw&riu=http%3a%2f%2f1.bp.blogspot.com%2f-f9kpcIhyfvc%2fU6Gb9FjtflI%2fAAAAAAAAA3M%2fq16vMv_Rspk%2fs1600%2fGood%2bRestaurant%2bInteriors.jpg&ehk=692Oe%2b%2fi1L7jGL1PTmbLwzr6rwzsFO1lz5SFlGUA7bg%3d&risl=&pid=ImgRaw&r=0",
+  "https://cdn.pixabay.com/photo/2015/12/12/21/13/restaurant-1090136_960_720.jpg",
+  "https://th.bing.com/th/id/R.610a2187b780be7ea62f92ee46d81dd0?rik=DuWyWIk2eGxWmQ&riu=http%3a%2f%2fimages.freehdw.com%2f800%2fnature-landscapes_widewallpaper_beautiful-wood-lined-restaurant-hdr_25766.jpg&ehk=nDNYAo45JhlsBqXoNhR17ZnHZT3pu4CgxTxtJSG6y%2bs%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1",
+  "https://images.unsplash.com/photo-1552566626-52f8b828add9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cmVzdGF1cmFudHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80",
+  "https://th.bing.com/th/id/R.dc83cb0cdb11d1d5c8e3aa4ff97e5c1c?rik=g24JHfwXuItUtg&riu=http%3a%2f%2fevolvingphotography.com%2fwp-content%2fuploads%2f2018%2f04%2fReal-Estate-Photography-38.jpg&ehk=RHIit3IKQUCRT%2f51StVBCFTtssDYa5rpS1dRSCHmby8%3d&risl=&pid=ImgRaw&r=0",
+  "https://images.pexels.com/photos/776538/pexels-photo-776538.jpeg?cs=srgb&dl=pexels-fotios-photos-776538.jpg&fm=jpg",
+  "https://assets.website-files.com/5f99648960675e370da154ab/6399f785bf3ea32a196ccad5_market-house_Website-Header-1.jpg",
+  "https://images.pexels.com/photos/370984/pexels-photo-370984.jpeg?cs=srgb&dl=pexels-creative-vix-370984.jpg&fm=jpg",
+  "https://wallpapercave.com/wp/wp1874169.jpg",
+  "https://images.pexels.com/photos/776538/pexels-photo-776538.jpeg?cs=srgb&dl=pexels-fotios-photos-776538.jpg&fm=jpg",
+  "https://images.pexels.com/photos/3745525/pexels-photo-3745525.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+  "https://wallpapercave.com/wp/wp1874182.jpg",
+  "https://images.pexels.com/photos/2923034/pexels-photo-2923034.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+  "https://images.pexels.com/photos/218417/pexels-photo-218417.jpeg?cs=srgb&dl=restaurant-218417.jpg&fm=jpg"
+];
+
+restaurants.forEach((name, index) => {
+  const div = document.createElement('div');
+  div.className = 'restaurant-card h-48 relative cursor-pointer';
+  div.innerHTML = `
+    <img class="restaurant-image" src="${restaurantImages[index]}" alt="${name}" />
+    <div class="absolute bottom-0 left-0 right-0 text-white text-center text-xl font-semibold restaurant-name p-4 bg-gradient-to-t from-black/60 to-transparent">
+      ${name}
+    </div>
+  `;
+  div.onclick = () => showPopup(name);
+  container.appendChild(div);
+});
+
+
+    };
+    function showCart() {
+  cartDetails.innerHTML = '';
+  let totalCost = 0;
+
+  Object.entries(cart).forEach(([restaurantName, items]) => {
+    const restHeader = document.createElement('div');
+    restHeader.className = "font-bold mt-4 mb-2 text-lg text-purple-700 flex justify-between items-center";
+    restHeader.innerHTML = `<span>From ${restaurantName}</span><button onclick="removeRestaurant('${restaurantName}')" class="text-red-500 text-sm ml-2">Remove All</button>`;
+    cartDetails.appendChild(restHeader);
+
+    Object.entries(items).forEach(([itemName, quantity]) => {
+      const item = sampleItems.find(i => i.name === itemName);
+      if (item && quantity > 0) {
+        const itemTotal = item.price * quantity;
+        totalCost += itemTotal;
+        const div = document.createElement('div');
+        div.className = "flex justify-between border-b py-1";
+        div.innerHTML = `<span>${itemName} x ${quantity}</span><span>₹${itemTotal}</span>`;
+        cartDetails.appendChild(div);
+      }
+    });
+  });
+
+  // Add donation checkbox and Order Now button
+  const donationDiv = document.createElement('div');
+  donationDiv.className = "flex items-center gap-2 mt-4";
+  donationDiv.innerHTML = `
+    <input type="checkbox" id="donationCheckbox" onchange="calculateBill()">
+    <label for="donationCheckbox">Add ₹5 Donation</label>
+  `;
+  cartDetails.appendChild(donationDiv);
+
+  const orderBtn = document.createElement('button');
+  orderBtn.textContent = "Order Now";
+  orderBtn.className = "mt-2 bg-green-600 text-white px-4 py-2 rounded";
+  orderBtn.onclick = showBill;
+  cartDetails.appendChild(orderBtn);
+
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = "Clear Cart";
+  clearBtn.className = "mt-2 ml-2 bg-red-500 text-white px-4 py-2 rounded";
+  clearBtn.onclick = clearCart;
+  cartDetails.appendChild(clearBtn);
+
+  totalCostDisplay.textContent = totalCost;
+  cartPopup.classList.add('active');
+  overlay.classList.add('active');
+}
+
+function calculateBill() {
+  let total = 0;
+  Object.entries(cart).forEach(([_, items]) => {
+    Object.entries(items).forEach(([itemName, quantity]) => {
+      const item = sampleItems.find(i => i.name === itemName);
+      if (item) total += item.price * quantity;
+    });
+  });
+  const donation = document.getElementById('donationCheckbox')?.checked ? 5 : 0;
+  const tax = total * 0.05; // 5% tax
+  const delivery = 30;
+  return {
+    subtotal: total,
+    tax: tax,
+    delivery: delivery,
+    donation: donation,
+    total: total + tax + delivery + donation
+  };
+}
+
+function showBill() {
+  const bill = calculateBill();
+  const msg = `Your Bill Summary:\nSubtotal: ₹${bill.subtotal.toFixed(2)}\nTax (5%): ₹${bill.tax.toFixed(2)}\nDelivery Charge: ₹${bill.delivery}\nDonation: ₹${bill.donation}\n\nTotal Payable: ₹${bill.total.toFixed(2)}`;
+  alert(msg);
+}
+  </script>
+  
+  
+</body>
+</html>

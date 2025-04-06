@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Voucher - TastyBite</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+      color: #fff;
+    }
+    .glow-text span {
+      display: inline-block;
+      font-size: 60px;
+      font-weight: bold;
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .glow-text span:nth-child(odd) {
+      color: #6a0dad;
+    }
+    .glow-text span:nth-child(even) {
+      color: #f0e130;
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .voucher-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .voucher-box {
+      width: 280px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      margin: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .voucher-box:hover {
+      transform: scale(1.05);
+    }
+    .voucher-box h3 {
+      color: #6a0dad;
+    }
+    footer {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="glow-text">
+      <span>V</span><span>o</span><span>u</span><span>c</span><span>h</span><span>e</span><span>r</span>
+    </div>
+  </header>
+
+  <section class="voucher-section">
+    <div class="voucher-box">
+      <h3>₹100 Voucher</h3>
+      <p>Get ₹100 off on orders above ₹499. Valid for 7 days from purchase.</p>
+    </div>
+    <div class="voucher-box">
+      <h3>₹250 Voucher</h3>
+      <p>Enjoy ₹250 discount on orders above ₹999. Valid for 15 days.</p>
+    </div>
+    <div class="voucher-box">
+      <h3>₹500 Voucher</h3>
+      <p>Flat ₹500 off on your special meals. Use within 30 days of purchase.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 TastyBite. All rights reserved.
+  </footer>
+</body>
+</html>

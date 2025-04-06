@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offers & Coupons | TastyBite</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .glowing-wave-text {
+      font-size: 2.8rem;
+      font-weight: bold;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .glowing-wave-text span {
+      display: inline-block;
+      animation: wave 2s infinite ease-in-out;
+      animation-delay: calc(0.1s * var(--i));
+      color: #fff;
+      text-shadow: 0 0 4px #ffd700, 0 0 6px #ffcc00;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .offers-section {
+      padding: 40px;
+      max-width: 1000px;
+      margin: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .offer-box {
+      background-color: #222;
+      margin: 20px 0;
+      padding: 20px;
+      border-left: 6px solid gold;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .offer-box:hover {
+      transform: scale(1.02);
+      background-color: #2a2a2a;
+    }
+
+    .offer-box h3 {
+      color: #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .offer-box p {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ccc;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="glowing-wave-text">
+      <span style="--i:0">A</span>
+      <span style="--i:1">v</span>
+      <span style="--i:2">a</span>
+      <span style="--i:3">i</span>
+      <span style="--i:4">l</span>
+      <span style="--i:5">a</span>
+      <span style="--i:6">b</span>
+      <span style="--i:7">l</span>
+      <span style="--i:8">e</span>
+      <span style="--i:9"> </span>
+      <span style="--i:10">O</span>
+      <span style="--i:11">f</span>
+      <span style="--i:12">f</span>
+      <span style="--i:13">e</span>
+      <span style="--i:14">r</span>
+      <span style="--i:15">s</span>
+      <span style="--i:16"> </span>
+      <span style="--i:17">&</span>
+      <span style="--i:18"> </span>
+      <span style="--i:19">C</span>
+      <span style="--i:20">o</span>
+      <span style="--i:21">u</span>
+      <span style="--i:22">p</span>
+      <span style="--i:23">o</span>
+      <span style="--i:24">n</span>
+      <span style="--i:25">s</span>
+    </h1>
+  </header>
+
+  <section class="offers-section">
+    <div class="offer-box">
+      <h3>🔥 50% Off On First Order</h3>
+      <p>Use code <strong>WELCOME50</strong> to get 50% off on your first food order. Valid for new users only.</p>
+    </div>
+
+    <div class="offer-box">
+      <h3>🎉 Flat ₹100 Off</h3>
+      <p>Use coupon <strong>HUNGRY100</strong> for a flat ₹100 off on orders above ₹499.</p>
+    </div>
+
+    <div class="offer-box">
+      <h3>🍕 Buy 1 Get 1 Free</h3>
+      <p>Applicable on selected pizza combos every Friday. No code needed. Just add to cart and enjoy!</p>
+    </div>
+
+    <div class="offer-box">
+      <h3>💳 20% Cashback with PayZapp</h3>
+      <p>Pay using PayZapp wallet to get 20% cashback up to ₹75. T&C apply.</p>
+    </div>
+
+    <div class="offer-box">
+      <h3>🎁 Weekend Special</h3>
+      <p>Get free desserts on orders above ₹999 during weekends. Automatically applied at checkout.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 TastyBite. All rights reserved.
+  </footer>
+</body>
+</html>
