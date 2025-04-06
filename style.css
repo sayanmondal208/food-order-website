@@ -1,0 +1,372 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 15px #ff8c00;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffa500;
+    animation: glow 1.5s infinite alternate;
+  }
+  
+  nav ul {
+    display: flex;
+    list-style: none;
+  }
+  
+  nav ul li {
+    margin-left: 20px;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+  }
+  
+  nav ul li a:hover {
+    color: #ffa500;
+  }
+  
+  
+  h1 {
+    text-align: center;
+    margin: 30px 0;
+    color:black;
+  }
+  
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .category {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 20px #ff5722;
+    transition: transform 0.3s ease;
+  }
+  
+  .category:hover {
+    transform: scale(1.1);
+  }
+  
+  .category h3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+    z-index: 2;
+    text-shadow: 2px 2px 5px black;
+  }
+  
+  .items {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  
+  .category:hover .items {
+    display: block;
+    animation: rotate 10s linear infinite;
+  }
+  
+  .items img {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #fff;
+    object-fit: cover;
+  }
+  
+  @keyframes rotate {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  
+  /* Circle positions for 8 items */
+  .items img:nth-child(1) { top: 0%; left: 50%; transform: translate(-50%, -50%); }
+  .items img:nth-child(2) { top: 20%; left: 85%; transform: translate(-50%, -50%); }
+  .items img:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); }
+  .items img:nth-child(4) { top: 80%; left: 85%; transform: translate(-50%, -50%); }
+  .items img:nth-child(5) { top: 100%; left: 50%; transform: translate(-50%, -50%); }
+  .items img:nth-child(6) { top: 80%; left: 15%; transform: translate(-50%, -50%); }
+  .items img:nth-child(7) { top: 50%; left: 0%; transform: translate(-50%, -50%); }
+  .items img:nth-child(8) { top: 20%; left: 15%; transform: translate(-50%, -50%); }
+  
+  /* Backgrounds per category */
+  .rice { background-image: url('https://assets.epicurious.com/photos/568eb0bf7dc604b44b5355ee/16:9/w_2560%2Cc_limit/rice.jpg'); }
+  .beverages { background-image: url('https://www.kantar.com/en-cn/-/media/project/kantar/china/inspiration-china/2022-inspirartional/2022-brandz-global/food-and-beverage-close-up-of-drink-pouring-in-drinking-glass.jpeg'); }
+  .north-indian { background-image: url('https://shef.com/homemade-food/wp-content/uploads/62460e1c4fca70cf65b5d6d0_66492254-1.jpg'); }
+  .south-indian { background-image: url('https://www.archanaskitchen.com/images/archanaskitchen/0-Affiliate-Articles/RESTAURANT_STYLE_SOUTH_INDIAN_THALI_original.jpg'); }
+  .chinese { background-image: url('https://1.bp.blogspot.com/-bNJF5aWlXwI/WCcZrSPgdSI/AAAAAAAAAHM/F5aQdkEjYuUjoekNqQVrisEl5a9OgYsegCLcB/s1600/chinese-food-images.jpg'); }
+  
+  /* Service Boxes */
+  .services {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+  }
+  
+  .service-box {
+    background: rgba(0,0,0,0.7);
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 250px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .service-box:hover {
+    transform: translateY(-5px);
+    background: rgba(255,87,34,0.8);
+  }
+  
+  /* About Us */
+  #about {
+    background-color: rgba(0,0,0,0.75);
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  /* Contact Form */
+  .contact-form {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    border-radius: 8px;
+    color: white;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .contact-form button {
+    background: #ff5722;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .contact-form button:hover {
+    background: #ff784e;
+  }
+    
+
+    h1 {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 2rem;
+    }
+
+    /* Service Tabs */
+.service-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 40px 0;
+  }
+  
+  .glow-tab {
+    display: block;
+    width: 250px;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 20px #ff8c00;
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, max-height 0.3s ease;
+    overflow: hidden;
+    max-height: 200px; /* Adjust the max-height for the collapsed state */
+  }
+  
+  .glow-tab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff8c00;
+    max-height: 500px; /* Adjust the max-height for the expanded state */
+  }
+  
+  .glow-tab h3 {
+    margin: 10px 0;
+    font-size: 1.5rem;
+  }
+  
+  .glow-tab p {
+    font-size: 1rem;
+    color: #aaa;
+    display: none; /* Hide the extra content by default */
+  }
+  
+  .glow-tab:hover p {
+    display: block; /* Show more content when hovered */
+  }
+  
+    @keyframes glow {
+        0% {
+          text-shadow: 0 0 10px #ffa500, 0 0 20px #ffa500, 0 0 30px #ffa500, 0 0 40px #ff5722;
+        }
+        100% {
+          text-shadow: 0 0 20px #ffa500, 0 0 30px #ffa500, 0 0 40px #ffa500, 0 0 50px #ff5722;
+        }
+    }
+    @media (max-width: 768px) {
+        .categories {
+          flex-direction: column;
+          align-items: center;
+        }
+      
+        .category {
+          width: 150px;
+          height: 150px;
+        }
+      
+        .service-tabs {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+      
+        .glow-tab {
+          width: 80%;
+          margin: 10px 0;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .category {
+          width: 120px;
+          height: 120px;
+        }
+      
+        .glow-tab {
+          width: 90%;
+          font-size: 1rem;
+        }
+      }
+    /* About Us Section */
+#about-us {
+    background-color: #f4f4f4;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 40px;
+    border-radius: 10px;
+  }
+  
+  #about-us h2 {
+    color: #ff8c00;
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  #about-us p {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+/* 
+  #show-more-btn {
+    background-color: #ff8c00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  */
+  #show-more-btn:hover {
+    background-color: #e67e00;
+  }
+
+
+  .glowing-text {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #ff7300, #fffa00, #ff7300);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    animation: softGlow 6s ease-in-out infinite, slowShift 10s linear infinite, subtleBounce 3s ease-in-out infinite;
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  @keyframes softGlow {
+    0%, 100% {
+      text-shadow: 0 0 6px #ffcc00, 0 0 12px #ffaa00;
+    }
+    50% {
+      text-shadow: 0 0 8px #ffee00, 0 0 16px #ff9900;
+    }
+  }
+  
+  @keyframes slowShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  @keyframes subtleBounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px); /* Soft upward motion */
+    }
+  }
+  
