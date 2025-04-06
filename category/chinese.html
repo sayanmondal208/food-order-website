@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chinese Food | TastyBite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1608032076985-1d89c4132c8e?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
+      padding: 30px;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 3em;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .item-card {
+      background: rgba(0,0,0,0.65);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .item-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    .item-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .item-info {
+      padding: 15px;
+    }
+
+    .item-info h3 {
+      margin-bottom: 10px;
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .item-actions button {
+      background: #ff5252;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .quantity {
+      font-size: 18px;
+    }
+
+    #cart-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #00e676;
+      color: #000;
+      padding: 15px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      display: none;
+      box-shadow: 0 0 20px #00e676;
+      cursor: pointer;
+      z-index: 999;
+      transition: 0.4s ease;
+    }
+
+    #cart-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>Chinese Food</h1>
+  <div class="menu-grid" id="menuGrid"></div>
+
+  <button id="cart-btn" onclick="goToCart()">Go to FoodBucket</button>
+
+  <script>
+    const chineseDishes = [
+      { name: "Fried Rice", img: "https://images.unsplash.com/photo-1608759263653-dc9d7f661f90?auto=format&fit=crop&w=800&q=80" },
+      { name: "Hakka Noodles", img: "https://images.unsplash.com/photo-1589308078054-8327e687fd74?auto=format&fit=crop&w=800&q=80" },
+      { name: "Chilli Chicken", img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80" },
+      { name: "Manchurian Balls", img: "https://images.unsplash.com/photo-1587398410754-4f2f1f5e68a3?auto=format&fit=crop&w=800&q=80" },
+      { name: "Spring Rolls", img: "https://images.unsplash.com/photo-1614665370942-fcb9b79e768e?auto=format&fit=crop&w=800&q=80" },
+      { name: "Schezwan Rice", img: "https://images.unsplash.com/photo-1625941971956-c2b3e92971e4?auto=format&fit=crop&w=800&q=80" }
+    ];
+
+    const cart = JSON.parse(localStorage.getItem("tastyCart")) || {};
+
+    function updateCartBtn() {
+      const total = Object.values(cart).reduce((a, b) => a + b, 0);
+      document.getElementById("cart-btn").style.display = total > 0 ? "block" : "none";
+    }
+
+    function changeQty(name, delta) {
+      if (!cart[name]) cart[name] = 0;
+      cart[name] += delta;
+      if (cart[name] < 0) cart[name] = 0;
+      document.getElementById("qty-" + name).innerText = cart[name];
+      updateCartBtn();
+      localStorage.setItem("tastyCart", JSON.stringify(cart));
+    }
+
+    function goToCart() {
+      window.location.href = "cart.html"; // Ensure this page is created and handles the cart
+    }
+
+    function renderMenu() {
+      const grid = document.getElementById("menuGrid");
+      chineseDishes.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "item-card";
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <div class="item-actions">
+              <button onclick="changeQty('${item.name}', -1)">-</button>
+              <span class="quantity" id="qty-${item.name}">${cart[item.name] || 0}</span>
+              <button onclick="changeQty('${item.name}', 1)">+</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    renderMenu();
+    updateCartBtn();
+  </script>
+</body>
+</html>
