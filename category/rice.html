@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rice | TastyBite</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: url('https://cdn-az.allevents.in/events5/banners/d72e7a9c610ba960fca8f1548864cc4111dfe4cf50b5dce92bc5361cbdb5d9d1-rimg-w678-h452-gmir.jpg?v=1698563826') no-repeat center center/cover;
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.7);
+      margin: 0;
+    }
+
+    #items-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .item {
+      width: 200px;
+      background-color: rgba(0,0,0,0.7);
+      border-radius: 10px;
+      margin: 10px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px yellow;
+      transition: transform 0.3s ease;
+    }
+
+    .item:hover {
+      transform: scale(1.05);
+    }
+
+    .item img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .qty-control {
+      margin-top: 10px;
+    }
+
+    .qty-control button {
+      padding: 5px 10px;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+
+    #add-to-cart-btn {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: orange;
+      color: black;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px white;
+    }
+
+    #cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: yellow;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      color: black;
+      box-shadow: 0 0 10px white;
+    }
+
+    #cart-box {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background-color: rgba(0,0,0,0.85);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 300px;
+      color: white;
+      box-shadow: 0 0 15px yellow;
+      z-index: 9999;
+    }
+
+    #cart-items li {
+      margin-bottom: 8px;
+    }
+
+    #cart-items button {
+      margin-left: 10px;
+      background: red;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #price-breakdown {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .cart-buttons {
+      margin-top: 15px;
+      text-align: right;
+    }
+
+    .cart-buttons button {
+      margin-left: 8px;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .clear-btn {
+      background-color: red;
+      color: white;
+    }
+
+    .close-btn {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rice Dishes</h1>
+
+  <div id="cart-icon" onclick="toggleCart()">
+    🛒 (<span id="cart-count">0</span>)
+  </div>
+
+  <div id="items-container"></div>
+
+  <button id="add-to-cart-btn">Add to FoodBucket</button>
+
+  <div id="cart-box">
+    <h3>Your FoodBucket</h3>
+    <ul id="cart-items"></ul>
+    <div id="price-breakdown"></div>
+    <div class="cart-buttons">
+      <button class="clear-btn" onclick="clearCart()">Clear All</button>
+      <button class="close-btn" onclick="toggleCart()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const riceItems = [
+      { name: "Chicken Biryani", img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/12/chicken-biryani-recipe.jpg", price: 180 },
+      { name: "Veg Fried Rice", img: "https://th.bing.com/th/id/OIP.9aoqWQnzKwDmXe-tC4wtzgHaHa?rs=1&pid=ImgDetMain", price: 120 },
+      { name: "Jeera Rice", img: "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/12/jeera-rice-cumin-rice.jpg", price: 90 },
+      { name: "Mutton Biryani", img: "https://www.jaffnalove.com/3349-thickbox_default/hyderabad-mutton-biryani.jpg", price: 220 },
+      { name: "Peas Pulao", img: "https://www.whiskaffair.com/wp-content/uploads/2021/03/Peas-Pulao-2-3.jpg", price: 110 }
+    ];
+
+    let itemQty = JSON.parse(localStorage.getItem("itemQty")) || Array(riceItems.length).fill(0);
+    let cart = [];
+
+    const container = document.getElementById('items-container');
+    const cartBox = document.getElementById('cart-box');
+    const cartItems = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const priceBreakdown = document.getElementById('price-breakdown');
+
+    function renderItems() {
+      container.innerHTML = '';
+      riceItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="name">${item.name}</div>
+          <div class="price">₹${item.price}</div>
+          <div class="qty-control">
+            <button onclick="changeQty(${index}, -1)">-</button>
+            <span id="qty-${index}">${itemQty[index]}</span>
+            <button onclick="changeQty(${index}, 1)">+</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      toggleAddBtn();
+    }
+
+    function changeQty(index, delta) {
+      const wasZeroBefore = itemQty[index] === 0;
+      itemQty[index] += delta;
+      if (itemQty[index] < 0) itemQty[index] = 0;
+      document.getElementById(`qty-${index}`).textContent = itemQty[index];
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
+
+      if (delta === 1 && wasZeroBefore) toggleAddBtn();
+      if (delta === -1) updateCart();
+    }
+
+    function toggleAddBtn() {
+      const anySelected = itemQty.some(qty => qty > 0);
+      addToCartBtn.style.display = anySelected ? 'block' : 'none';
+    }
+
+    addToCartBtn.onclick = () => {
+      cart = [];
+      itemQty.forEach((qty, i) => {
+        if (qty > 0) cart.push({ ...riceItems[i], qty });
+      });
+      updateCart();
+      addToCartBtn.style.display = "none";
+    };
+
+    function toggleCart() {
+      cartBox.style.display = cartBox.style.display === 'none' ? 'block' : 'none';
+      updateCart();
+    }
+
+    function updateCart() {
+  cartItems.innerHTML = '';
+  let total = 0;
+  let newCart = [];
+
+  itemQty.forEach((qty, i) => {
+    if (qty > 0) {
+      const item = riceItems[i];
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${item.name} x ${qty} = ₹${item.price * qty}
+        <button onclick="changeQty(${i}, -1)">-</button>
+      `;
+      cartItems.appendChild(li);
+      total += item.price * qty;
+      newCart.push({ ...item, qty });
+    }
+  });
+
+  cart = newCart;
+  cartCount.textContent = cart.length;
+
+  const clearBtn = document.querySelector('.clear-btn');
+  if (cart.length === 0) {
+    priceBreakdown.innerHTML = "No items selected.";
+    if (clearBtn) clearBtn.style.display = 'none';
+    return;
+  } else {
+    if (clearBtn) clearBtn.style.display = 'inline-block';
+  }
+
+  const tax = total * 0.05;
+  const delivery = 30;
+  const distance = Math.floor(Math.random() * 10 + 1);
+  const distCharge = distance * 2;
+  const grandTotal = total + tax + delivery + distCharge;
+
+  priceBreakdown.innerHTML = `
+    <br>Subtotal: ₹${total.toFixed(2)}
+    <br>Tax (5%): ₹${tax.toFixed(2)}
+    <br>Delivery: ₹${delivery}
+    <br>Distance (${distance}km): ₹${distCharge}
+    <br><strong>Total: ₹${grandTotal.toFixed(2)}</strong>
+  `;
+}
+
+    function clearCart() {
+      itemQty = Array(riceItems.length).fill(0);
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
+      renderItems();
+      updateCart();
+    }
+
+    renderItems();
+    updateCart();
+  </script>
+</body>
+</html>
