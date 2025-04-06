@@ -8,17 +8,20 @@
   <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
 </head>
 <body>
-
+  
   <nav>
-    <div class="logo">TastyBite</div>
-    <ul>
-      <li><a href="#">Home</a></li>
-      <li><a href="#categories">Categories</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <div class="logo">🍔 TastyBite</div>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+      <ul class="menu" id="dropdownmenu">
+        <li><a href="#">Home</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
   </nav>
 
+
+ <!--glowing text in h1-->
 <h1 class="glowing-text">Choose your favourite one </h1>
 
 <div class="categories" id="categories">
@@ -39,7 +42,7 @@
   </div>
 
   <!-- Beverages -->
-  <div class="category beverages"data-target="category/breverages.html">
+  <div class="category beverages"data-target="category/beverages.html">
     <h3>Beverages</h3>
     <div class="items">
       <img src="https://s7d1.scene7.com/is/image/KeminIndustries/shutterstock_519547867?$responsive$" />
@@ -148,28 +151,7 @@
     <p id="status"></p>
   </form>
   
-  <script>
-  const form = document.getElementById("my-form");
-  const status = document.getElementById("status");
-  
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = new FormData(form);
-    const res = await fetch(form.action, {
-      method: form.method,
-      body: data,
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    if (res.ok) {
-      status.innerText = "Message sent! Thank you 😊";
-      form.reset();
-    } else {
-      status.innerText = "Oops! Something went wrong.";
-    }
-  });
-  </script>
+
 </div>
   <!-- Footer -->
   <footer style="background-color: #333; color: white; text-align: center; padding: 20px;">
