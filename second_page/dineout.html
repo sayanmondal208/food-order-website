@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dine Out - TastyBite</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+      color: #fff;
+    }
+    .glow-text span {
+      display: inline-block;
+      font-size: 60px;
+      font-weight: bold;
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .glow-text span:nth-child(odd) {
+      color: #ff1493;
+    }
+    .glow-text span:nth-child(even) {
+      color: #ffa500;
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .dine-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .dine-box {
+      width: 280px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      margin: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .dine-box:hover {
+      transform: scale(1.05);
+    }
+    .dine-box h3 {
+      color: #ff1493;
+    }
+    footer {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="glow-text">
+      <span>D</span><span>i</span><span>n</span><span>e</span> <span>O</span><span>u</span><span>t</span>
+    </div>
+  </header>
+
+  <section class="dine-section">
+    <div class="dine-box">
+      <h3>Romantic Dinner</h3>
+      <p>Book a candlelight dinner for your special someone at top-rated restaurants.</p>
+    </div>
+    <div class="dine-box">
+      <h3>Family Lunch</h3>
+      <p>Reserve a table for a joyful weekend lunch with your loved ones.</p>
+    </div>
+    <div class="dine-box">
+      <h3>Corporate Dining</h3>
+      <p>Host your business meet with premium seating and gourmet menu options.</p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 TastyBite. All rights reserved.
+  </footer>
+</body>
+</html>
