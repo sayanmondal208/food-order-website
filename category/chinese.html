@@ -2,166 +2,415 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chinese Food | TastyBite</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <title>chinese | TastyBite</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-    }
+    @media screen and (max-width: 768px) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  #items-container {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .item {
+    width: 90%;
+    margin: 10px 0;
+    padding: 10px;
+  }
+
+  .item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .qty-control button {
+    padding: 6px 10px;
+    font-size: 16px;
+  }
+
+  #add-to-cart-btn {
+    width: 90%;
+    font-size: 16px;
+    padding: 12px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #cart-icon {
+    top: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  #cart-box {
+    width: 90%;
+    top: 60px;
+    right: 5%;
+    max-width: none;
+    padding: 15px;
+    font-size: 14px;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+
+  .cart-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .cart-buttons button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  #price-breakdown {
+    font-size: 13px;
+  }
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
     body {
-      background: url('https://images.unsplash.com/photo-1608032076985-1d89c4132c8e?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
-      padding: 30px;
-      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: url('https://cdn-az.allevents.in/events5/banners/d72e7a9c610ba960fca8f1548864cc4111dfe4cf50b5dce92bc5361cbdb5d9d1-rimg-w678-h452-gmir.jpg?v=1698563826') no-repeat center center/cover;
+      color: white;
     }
-
+    body::before {
+    content: '';
+    position: fixed; /* So it covers the whole screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%); /* Adjust this value as needed */
+    z-index: -1; /* Send it behind everything */
+  }
     h1 {
       text-align: center;
-      margin-bottom: 30px;
-      font-size: 3em;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+      padding: 20px;
+      background-color: rgba(0,0,0,0.7);
+      margin: 0;
     }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .item-card {
-      background: rgba(0,0,0,0.65);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: 0.3s;
-      position: relative;
-    }
-
-    .item-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    }
-
-    .item-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-
-    .item-info {
-      padding: 15px;
-    }
-
-    .item-info h3 {
-      margin-bottom: 10px;
-    }
-
-    .item-actions {
+    #items-container {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .item {
+      width: 200px;
+      background-color: rgba(0,0,0,0.7);
+      border-radius: 10px;
+      margin: 10px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px yellow;
+      transition: transform 0.3s ease;
+    }
+
+    .item:hover {
+      transform: scale(1.05);
+    }
+
+    .item img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .qty-control {
       margin-top: 10px;
     }
 
-    .item-actions button {
-      background: #ff5252;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 5px;
-      color: #fff;
+    .qty-control button {
+      padding: 5px 10px;
       font-size: 16px;
-      cursor: pointer;
+      margin: 0 5px;
     }
 
-    .quantity {
-      font-size: 18px;
-    }
-
-    #cart-btn {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: #00e676;
-      color: #000;
-      padding: 15px 25px;
-      font-size: 18px;
-      font-weight: bold;
-      border: none;
-      border-radius: 50px;
+    #add-to-cart-btn {
       display: none;
-      box-shadow: 0 0 20px #00e676;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: orange;
+      color: black;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      z-index: 999;
-      transition: 0.4s ease;
+      box-shadow: 0 0 10px white;
     }
 
-    #cart-btn:hover {
-      transform: scale(1.05);
+    #cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: yellow;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      color: black;
+      box-shadow: 0 0 10px white;
+    }
+
+    #cart-box {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background-color: rgba(0,0,0,0.85);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 300px;
+      color: white;
+      box-shadow: 0 0 15px yellow;
+      z-index: 9999;
+    }
+
+    #cart-items li {
+      margin-bottom: 8px;
+    }
+
+    #cart-items button {
+      margin-left: 10px;
+      background: red;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #price-breakdown {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .cart-buttons {
+      margin-top: 15px;
+      text-align: right;
+    }
+
+    .cart-buttons button {
+      margin-left: 8px;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .clear-btn {
+      background-color: red;
+      color: white;
+    }
+
+    .close-btn {
+      background-color: #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>Chinese Food</h1>
-  <div class="menu-grid" id="menuGrid"></div>
+  <h1>Beverages</h1>
 
-  <button id="cart-btn" onclick="goToCart()">Go to FoodBucket</button>
+  <div id="cart-icon" onclick="toggleCart()">
+    🛒 (<span id="cart-count">0</span>)
+  </div>
+
+  <div id="items-container"></div>
+
+  <button id="add-to-cart-btn">Add to FoodBucket</button>
+
+  <div id="cart-box">
+    <h3>Your FoodBucket</h3>
+    <ul id="cart-items"></ul>
+    <div id="price-breakdown"></div>
+    <div class="cart-buttons">
+      <button class="clear-btn" onclick="clearCart()">Clear All</button>
+      <button class="close-btn" onclick="toggleCart()">Close</button>
+    </div>
+  </div>
 
   <script>
-    const chineseDishes = [
-      { name: "Fried Rice", img: "https://images.unsplash.com/photo-1608759263653-dc9d7f661f90?auto=format&fit=crop&w=800&q=80" },
-      { name: "Hakka Noodles", img: "https://images.unsplash.com/photo-1589308078054-8327e687fd74?auto=format&fit=crop&w=800&q=80" },
-      { name: "Chilli Chicken", img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80" },
-      { name: "Manchurian Balls", img: "https://images.unsplash.com/photo-1587398410754-4f2f1f5e68a3?auto=format&fit=crop&w=800&q=80" },
-      { name: "Spring Rolls", img: "https://images.unsplash.com/photo-1614665370942-fcb9b79e768e?auto=format&fit=crop&w=800&q=80" },
-      { name: "Schezwan Rice", img: "https://images.unsplash.com/photo-1625941971956-c2b3e92971e4?auto=format&fit=crop&w=800&q=80" }
-    ];
+    const ChineseItems = [
+  { name: "Chilli Chicken", img: "https://i.imgur.com/Rtzrbqn.jpg", price: 180 },
+  { name: "Veg Manchurian", img: "https://i.imgur.com/ED5a9SV.jpg", price: 140 },
+  { name: "Chicken Hakka Noodles", img: "https://i.imgur.com/kC7U8p3.jpg", price: 160 },
+  { name: "Veg Fried Rice", img: "https://i.imgur.com/2cF1aJ9.jpg", price: 130 },
+  { name: "Spring Rolls", img: "https://i.imgur.com/W9zZlvf.jpg", price: 100 },
+  { name: "Schezwan Chicken", img: "https://i.imgur.com/FIotwLG.jpg", price: 190 },
+  { name: "Garlic Noodles", img: "https://i.imgur.com/yrb4J3U.jpg", price: 150 },
+  { name: "Honey Chilli Potato", img: "https://i.imgur.com/x2UXtxg.jpg", price: 120 },
+  { name: "Paneer Chilli", img: "https://i.imgur.com/Z0j5U9R.jpg", price: 160 },
+  { name: "Chicken Lollipop", img: "https://i.imgur.com/dyQbsHc.jpg", price: 200 },
+  { name: "Schezwan Fried Rice", img: "https://i.imgur.com/5m8CqNO.jpg", price: 150 },
+  { name: "Crispy Baby Corn", img: "https://i.imgur.com/3V9FV2z.jpg", price: 130 },
+  { name: "Egg Hakka Noodles", img: "https://i.imgur.com/IjeOpYJ.jpg", price: 150 },
+  { name: "Chicken Momos", img: "https://i.imgur.com/smM1lA1.jpg", price: 120 },
+  { name: "Veg Momos", img: "https://i.imgur.com/R2a3m5B.jpg", price: 110 },
+  { name: "Dragon Chicken", img: "https://i.imgur.com/2K0PISn.jpg", price: 190 },
+  { name: "Gobi Manchurian", img: "https://i.imgur.com/DWVKcHC.jpg", price: 130 },
+  { name: "Sweet and Sour Chicken", img: "https://i.imgur.com/lLKs0T2.jpg", price: 175 }
 
-    const cart = JSON.parse(localStorage.getItem("tastyCart")) || {};
+];
 
-    function updateCartBtn() {
-      const total = Object.values(cart).reduce((a, b) => a + b, 0);
-      document.getElementById("cart-btn").style.display = total > 0 ? "block" : "none";
+
+    let itemQty = JSON.parse(localStorage.getItem("itemQty")) || [];
+  
+    // 🛠️ Ensure itemQty length matches the number of items
+    if (itemQty.length !== ChineseItems.length) {
+      itemQty = Array(ChineseItems.length).fill(0);
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
     }
-
-    function changeQty(name, delta) {
-      if (!cart[name]) cart[name] = 0;
-      cart[name] += delta;
-      if (cart[name] < 0) cart[name] = 0;
-      document.getElementById("qty-" + name).innerText = cart[name];
-      updateCartBtn();
-      localStorage.setItem("tastyCart", JSON.stringify(cart));
-    }
-
-    function goToCart() {
-      window.location.href = "cart.html"; // Ensure this page is created and handles the cart
-    }
-
-    function renderMenu() {
-      const grid = document.getElementById("menuGrid");
-      chineseDishes.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "item-card";
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <div class="item-info">
-            <h3>${item.name}</h3>
-            <div class="item-actions">
-              <button onclick="changeQty('${item.name}', -1)">-</button>
-              <span class="quantity" id="qty-${item.name}">${cart[item.name] || 0}</span>
-              <button onclick="changeQty('${item.name}', 1)">+</button>
-            </div>
+  
+    let cart = [];
+  
+    const container = document.getElementById('items-container');
+    const cartBox = document.getElementById('cart-box');
+    const cartItems = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const priceBreakdown = document.getElementById('price-breakdown');
+  
+    function renderItems() {
+      container.innerHTML = '';
+      ChineseItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="name">${item.name}</div>
+          <div class="price">₹${item.price}</div>
+          <div class="qty-control">
+            <button onclick="changeQty(${index}, -1)">-</button>
+            <span id="qty-${index}">${itemQty[index]}</span>
+            <button onclick="changeQty(${index}, 1)">+</button>
           </div>
         `;
-        grid.appendChild(card);
+        container.appendChild(div);
       });
+      toggleAddBtn();
     }
-
-    renderMenu();
-    updateCartBtn();
+  
+    function changeQty(index, delta) {
+      const previousQty = itemQty[index];
+      itemQty[index] += delta;
+      if (itemQty[index] < 0) itemQty[index] = 0;
+  
+      // Update display and localStorage
+      document.getElementById(`qty-${index}`).textContent = itemQty[index];
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
+  
+      // Show/hide add-to-cart if item was 0 and now increased
+      if (delta === 1 && previousQty === 0) toggleAddBtn();
+      if (delta === -1) updateCart();
+    }
+  
+    function toggleAddBtn() {
+      const anySelected = itemQty.some(qty => qty > 0);
+      addToCartBtn.style.display = anySelected ? 'block' : 'none';
+    }
+  
+    addToCartBtn.onclick = () => {
+      cart = [];
+      itemQty.forEach((qty, i) => {
+        if (qty > 0) cart.push({ ...ChineseItems[i], qty });
+      });
+      updateCart();
+      addToCartBtn.style.display = "none";
+    };
+  
+    function toggleCart() {
+      cartBox.style.display = cartBox.style.display === 'none' ? 'block' : 'none';
+      updateCart();
+    }
+  
+    function updateCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+      let newCart = [];
+  
+      itemQty.forEach((qty, i) => {
+        if (qty > 0) {
+          const item = ChineseItems[i];
+          const li = document.createElement('li');
+          li.innerHTML = `
+            ${item.name} x ${qty} = ₹${item.price * qty}
+            <button onclick="changeQty(${i}, -1)">-</button>
+          `;
+          cartItems.appendChild(li);
+          total += item.price * qty;
+          newCart.push({ ...item, qty });
+        }
+      });
+  
+      cart = newCart;
+      cartCount.textContent = cart.length;
+  
+      const clearBtn = document.querySelector('.clear-btn');
+      if (cart.length === 0) {
+        priceBreakdown.innerHTML = "No items selected.";
+        if (clearBtn) clearBtn.style.display = 'none';
+        return;
+      } else {
+        if (clearBtn) clearBtn.style.display = 'inline-block';
+      }
+  
+      const tax = total * 0.05;
+      const delivery = 30;
+      const distance = Math.floor(Math.random() * 10 + 1);
+      const distCharge = distance * 2;
+      const grandTotal = total + tax + delivery + distCharge;
+  
+      priceBreakdown.innerHTML = `
+        <br>Subtotal: ₹${total.toFixed(2)}
+        <br>Tax (5%): ₹${tax.toFixed(2)}
+        <br>Delivery: ₹${delivery}
+        <br>Distance (${distance}km): ₹${distCharge}
+        <br><strong>Total: ₹${grandTotal.toFixed(2)}</strong>
+      `;
+    }
+  
+    function clearCart() {
+      itemQty = Array(ChineseItems.length).fill(0);
+      localStorage.setItem("itemQty", JSON.stringify(itemQty));
+      renderItems();
+      updateCart();
+    }
+  
+    // Init
+    renderItems();
+    updateCart();
   </script>
+  
 </body>
 </html>
